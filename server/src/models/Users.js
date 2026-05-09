@@ -31,6 +31,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    year:{
+      type:Number,
+      trim:true,
+    },
+    branch:{
+      type:String,
+      trim:true
+    },
+    resetPasswordToken:{
+      type:String
+    },
+    resetPasswordExpire:{
+      type:Date
+    }
   },
   {
     timestamps: true,
