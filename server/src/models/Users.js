@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema(
     },
     year:{
       type:Number,
+      num:[1,2,3,4],
       trim:true,
     },
     branch:{
