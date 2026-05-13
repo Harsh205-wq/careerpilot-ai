@@ -1,6 +1,6 @@
 import ProgressCard from "./ProgressCard.jsx";
 
-function GoalSelectorSection({ goals, onGoalChange, selectedGoal }) {
+function GoalSelectorSection({ goals, isSaving = false, onGoalChange, selectedGoal }) {
   return (
     <ProgressCard badge="Goal Selection" title="Select your career goal">
       <p className="max-w-3xl text-sm leading-7 text-app-subtext sm:text-base">
@@ -19,7 +19,8 @@ function GoalSelectorSection({ goals, onGoalChange, selectedGoal }) {
                 isSelected
                   ? "border-app-orange bg-app-orange/12 shadow-app-glow-sm"
                   : "border-[#303030] bg-[#181818] hover:border-app-orange/25 hover:bg-[#202020]"
-              }`.trim()}
+              } ${isSaving ? "cursor-wait opacity-80" : ""}`.trim()}
+              disabled={isSaving}
               key={goal}
               onClick={() => onGoalChange(goal)}
               type="button"
@@ -64,9 +65,11 @@ function GoalSelectorSection({ goals, onGoalChange, selectedGoal }) {
 
       <div className="mt-5 rounded-[1.4rem] border border-[#303030] bg-[#181818] px-4 py-3">
         <span className="text-xs uppercase tracking-[0.18em] text-app-muted">
-          Current dashboard focus
+          {isSaving ? "Syncing selected goal" : "Current dashboard focus"}
         </span>
-        <p className="mt-2 text-sm text-app-text sm:text-base">{selectedGoal}</p>
+        <p className="mt-2 text-sm text-app-text sm:text-base">
+          {isSaving ? `Saving ${selectedGoal}...` : selectedGoal}
+        </p>
       </div>
     </ProgressCard>
   );

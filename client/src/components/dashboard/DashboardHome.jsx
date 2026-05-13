@@ -12,6 +12,7 @@ function DashboardHome({
   dailyTasks,
   goalOptions,
   interviewPrep,
+  isGoalSaving,
   onGoalChange,
   projects,
   quickActions,
@@ -37,6 +38,7 @@ function DashboardHome({
     <div className="space-y-6">
       <GoalSelectorSection
         goals={goalOptions}
+        isSaving={isGoalSaving}
         onGoalChange={onGoalChange}
         selectedGoal={selectedGoal}
       />

@@ -49,11 +49,12 @@ const readStoredUser = () => {
     return null;
   }
 
-  return readStoredJson(AUTH_STORAGE_KEY);
+  const storedUser = readStoredJson(AUTH_STORAGE_KEY);
+  return storedUser ? buildUserProfile(storedUser) : null;
 };
 
 const saveUser = (user) => {
-  window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+  window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(buildUserProfile(user)));
 };
 
 const saveToken = (token) => {
@@ -115,28 +116,56 @@ const normalizeSignupInput = ({
 };
 
 const buildUserProfile = ({
+  _id,
   age,
   branch,
+  careerGoal,
   collegeName,
   email,
   focusArea,
   id,
   name,
+  preferredJobType,
   role,
+  roleLabel,
+  skills,
   targetRole,
   year,
 }) => ({
   age: age ?? null,
   branch: branch || "",
+  careerGoal: careerGoal || "",
   collegeName: collegeName || "",
   email,
   focusArea: focusArea || "",
-  id: id || "",
+  id: id || _id || "",
   name: name || email?.split("@")[0] || "",
-  role: targetRole || role || "",
+  preferredJobType: preferredJobType || "",
+  role: role || "",
+  roleLabel:
+    roleLabel ||
+    (role === "student" ? "Student" : role === "professional" ? "Job Seeker" : ""),
+  skills: Array.isArray(skills)
+    ? skills
+    : typeof skills === "string"
+    ? skills.split(",").map((skill) => skill.trim()).filter(Boolean)
+    : [],
+  targetRole: targetRole || "",
   accountRole: role || "",
   year: year ?? null,
 });
+
+const mergeProfileData = (baseProfile = {}, fallbackProfile = {}, overrideProfile = {}) => {
+  const mergedProfile = { ...fallbackProfile, ...baseProfile };
+
+  Object.entries(overrideProfile).forEach(([key, value]) => {
+    if (value !== undefined) {
+      mergedProfile[key] = value;
+    }
+  });
+
+  return mergedProfile;
+};
 
 const parseApiResponse = async (response) => {
   const rawText = await response.text();
@@ -270,10 +299,48 @@ const logout = () => {
   clearStoredSession();
 };
 
+const getProfile = async () => {
+  const response = await request("/auth/profile", { method: "GET" });
+  const storedUser = readStoredJson(AUTH_STORAGE_KEY);
+  const preservedRoleLabel =
+    storedUser?.role === response.user?.role ? storedUser?.roleLabel : undefined;
+
+  return buildUserProfile(mergeProfileData(response.user || {}, storedUser || {}, {
+    roleLabel: preservedRoleLabel,
+  }));
+};
+
+const updateProfile = async (profileData) => {
+  const response = await request("/auth/profile", {
+    method: "PUT",
+    body: profileData,
+  });
+  const storedUser = readStoredJson(AUTH_STORAGE_KEY);
+  const preservedRoleLabel =
+    profileData?.roleLabel ||
+    (storedUser?.role === response.user?.role ? storedUser?.roleLabel : undefined);
+  const normalizedUser = buildUserProfile(mergeProfileData(
+    response.user || {},
+    storedUser || {},
+    {
+      ...profileData,
+      roleLabel: preservedRoleLabel,
+    },
+  ));
+
+  if (response.user) {
+    saveUser(normalizedUser);
+  }
+
+  return normalizedUser;
+};
+
 export const authService = {
   getCurrentUser: readStoredUser,
   getToken: readStoredToken,
   login,
   logout,
   signup,
+  getProfile,
+  updateProfile,
 };

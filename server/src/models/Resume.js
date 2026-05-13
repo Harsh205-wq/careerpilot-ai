@@ -1,49 +1,95 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const resumeSchema = new mongoose.Schema(
+const improvedBulletSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-
-    resumeText: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    targetRole: {
+    original: {
       type: String,
       trim: true,
     },
-
-    atsScore: {
-      type: Number,
-      default: 0,
-    },
-
-    feedback: {
+    improved: {
       type: String,
       trim: true,
-    },
-
-    missingSkills: {
-      type: [String],
-      default: [],
-    },
-
-    suggestions: {
-      type: [String],
-      default: [],
     },
   },
-  {
-    timestamps: true,
-  }
+  { _id: false }
 );
 
-const Resume = mongoose.model("Resume", resumeSchema);
+const resumeAnalysisSchema=new mongoose.Schema({
+  user:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"User",
+    required:true,
+  },
+  targetRole:{
+    type:String,
+    required:true,
+    trim:true,
+  },
+  origanFileName:{
+    type:String,
+    trim:true
+  },
+  filetype:{
+    type:String,
+    trim:true,
+  },
+  jobDescription:{
+    type:String,
+    trim:true,
+    default:""
+  },
+  roleMatchScore:{
+    type:Number,
+    default:0
+  },
+  atsScore:{
+    type:Number,
+    default:0,
+  },
+  jobMatchScore: {
+      type: Number,
+      default: null,
+    },
 
-export default Resume;
+    strengths: {
+      type: [String],
+      default: [],
+    },
+
+    weaknesses: {
+      type: [String],
+      default: [],
+    },
+     missingSkills: {
+      type: [String],
+      default: [],
+    },
+
+    missingKeywords: {
+      type: [String],
+      default: [],
+    },
+
+    projectFeedback: {
+      type: [String],
+      default: [],
+    },
+
+    improvedBullets: {
+      type: [improvedBulletSchema],
+      default: [],
+    },
+
+    atsSuggestions: {
+      type: [String],
+      default: [],
+    },
+      actionPlan: {
+      type: [String],
+      default: [],
+    },
+},{timestamps:true}
+)
+const ResumeAnalysis = mongoose.model("ResumeAnalysis", resumeAnalysisSchema);
+
+export default ResumeAnalysis;

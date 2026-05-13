@@ -4,7 +4,7 @@ export const dashboardSidebarItems = [
   { id: "roadmap", label: "Career Roadmap", icon: "RM", path: "/roadmap", available: false },
   { id: "interview", label: "Mock Interview", icon: "MI", path: "/interview", available: false },
   { id: "skills", label: "Skills", icon: "SK", path: "/skills", available: false },
-  { id: "profile", label: "Profile", icon: "PF", path: "/profile", available: false },
+  { id: "profile", label: "Profile", icon: "PF", path: "/profile", available: true },
   { id: "settings", label: "Settings", icon: "ST", path: "/settings", available: false },
 ];
 

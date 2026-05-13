@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardHome from "../components/dashboard/DashboardHome.jsx";
 import DashboardLayout from "../components/dashboard/DashboardLayout.jsx";
@@ -13,6 +13,7 @@ import {
   DEFAULT_CAREER_GOAL,
   goalData,
 } from "../components/dashboard/goalData.js";
+import { authService } from "../services/authService.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const createId = (value) =>
@@ -30,10 +31,20 @@ const getSavedGoal = () => {
   return storedGoal && goalData[storedGoal] ? storedGoal : DEFAULT_CAREER_GOAL;
 };
 
-function Dashboard({ user }) {
+const resolveSelectedGoal = (...goalCandidates) =>
+  goalCandidates.find((goal) => goal && goalData[goal]) || DEFAULT_CAREER_GOAL;
+
+function Dashboard({ user: initialUser }) {
   const navigate = useNavigate();
-  const { logout } = useAuth();
-  const [selectedGoal, setSelectedGoal] = useState(getSavedGoal);
+  const { logout, setUser } = useAuth();
+  const [selectedGoal, setSelectedGoal] = useState(() =>
+    resolveSelectedGoal(initialUser?.targetRole, getSavedGoal()),
+  );
+  const [profileUser, setProfileUser] = useState(initialUser);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profileError, setProfileError] = useState("");
+  const [savingGoal, setSavingGoal] = useState(false);
+
   const selectedGoalData = goalData[selectedGoal] || goalData[DEFAULT_CAREER_GOAL];
   const roadmapSteps = selectedGoalData.roadmap.map((label, index) => ({
     id: `${createId(selectedGoal)}-roadmap-${index + 1}`,
@@ -49,25 +60,98 @@ function Dashboard({ user }) {
     (selectedGoalData.completedRoadmapSteps / selectedGoalData.roadmap.length) * 100,
   );
 
-  const handleGoalChange = (goal) => {
-    setSelectedGoal(goal);
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const token = authService.getToken();
+        if (!token) {
+          setProfileError("Session expired. Please login again.");
+          setLoadingProfile(false);
+          return;
+        }
 
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("careerGoal", goal);
+        const profile = await authService.getProfile();
+        const normalizedGoal = resolveSelectedGoal(profile?.targetRole, getSavedGoal());
+
+        setProfileUser(profile);
+        setUser?.(profile);
+        setSelectedGoal(normalizedGoal);
+        setProfileError("");
+
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem("careerGoal", normalizedGoal);
+        }
+      } catch (error) {
+        setProfileError(error.message || "Unable to load profile");
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    loadProfile();
+  }, [setUser]);
+
+  useEffect(() => {
+    if (!initialUser) {
+      return;
+    }
+
+    setProfileUser((currentProfile) => currentProfile || initialUser);
+
+    if (initialUser.targetRole && goalData[initialUser.targetRole]) {
+      setSelectedGoal(initialUser.targetRole);
+
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("careerGoal", initialUser.targetRole);
+      }
+    }
+  }, [initialUser]);
+
+  const handleGoalChange = async (goal) => {
+    if (goal === selectedGoal || savingGoal) {
+      return;
+    }
+
+    const previousGoal = selectedGoal;
+    setSelectedGoal(goal);
+    setSavingGoal(true);
+    setProfileError("");
+
+    try {
+      const updatedProfile = await authService.updateProfile({ targetRole: goal });
+      setProfileUser(updatedProfile);
+      setUser?.(updatedProfile);
+
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("careerGoal", goal);
+      }
+    } catch (error) {
+      setSelectedGoal(previousGoal);
+
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("careerGoal", previousGoal);
+      }
+
+      setProfileError(error.message || "Unable to sync your selected goal right now.");
+    } finally {
+      setSavingGoal(false);
     }
   };
 
+  const activeUser = profileUser || initialUser;
   const resolvedUser = {
-    branch: user?.branch || user?.department || profileSnapshotFallback.branch,
+    branch:
+      activeUser?.branch || activeUser?.department || profileSnapshotFallback.branch,
     careerGoal: selectedGoal,
-    email: user?.email?.trim() || "Complete your profile",
-    name: user?.name?.trim() || "Student",
+    email: activeUser?.email?.trim() || "Complete your profile",
+    name: activeUser?.name?.trim() || "Student",
     preferredJobType:
-      user?.preferredJobType ||
-      user?.jobType ||
+      activeUser?.preferredJobType ||
+      activeUser?.jobType ||
       profileSnapshotFallback.preferredJobType,
-    role: user?.role || user?.profileType || user?.status || profileSnapshotFallback.role,
-    year: String(user?.year || user?.currentYear || profileSnapshotFallback.year),
+    role:
+      activeUser?.role || activeUser?.profileType || activeUser?.status || profileSnapshotFallback.role,
+    year: String(activeUser?.year || activeUser?.currentYear || profileSnapshotFallback.year),
   };
 
   const handleLogout = () => {
@@ -150,20 +234,35 @@ function Dashboard({ user }) {
       onLogout={handleLogout}
       user={resolvedUser}
     >
-      <DashboardHome
-        dailyTasks={dailyTasks}
-        goalOptions={careerGoalOptions}
-        interviewPrep={interviewPrepData}
-        onGoalChange={handleGoalChange}
-        profileSnapshot={profileSnapshot}
-        projects={selectedGoalData.projects}
-        quickActions={quickActions}
-        recommendedSkills={selectedGoalData.skills}
-        resumeHealth={resumeHealthData}
-        roadmapPreview={roadmapData}
-        selectedGoal={selectedGoal}
-        stats={personalizedStats}
-      />
+      <div className="space-y-4">
+        {loadingProfile ? (
+          <section className="rounded-[1.5rem] border border-[#303030] bg-[#181818] px-4 py-3 text-sm text-app-subtext">
+            Syncing your latest profile preferences...
+          </section>
+        ) : null}
+
+        {profileError ? (
+          <section className="rounded-[1.5rem] border border-red-500/30 bg-red-900/20 px-4 py-3 text-sm text-red-300">
+            {profileError}
+          </section>
+        ) : null}
+
+        <DashboardHome
+          dailyTasks={dailyTasks}
+          goalOptions={careerGoalOptions}
+          interviewPrep={interviewPrepData}
+          isGoalSaving={savingGoal}
+          onGoalChange={handleGoalChange}
+          profileSnapshot={profileSnapshot}
+          projects={selectedGoalData.projects}
+          quickActions={quickActions}
+          recommendedSkills={selectedGoalData.skills}
+          resumeHealth={resumeHealthData}
+          roadmapPreview={roadmapData}
+          selectedGoal={selectedGoal}
+          stats={personalizedStats}
+        />
+      </div>
     </DashboardLayout>
   );
 }

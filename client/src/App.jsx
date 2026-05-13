@@ -5,6 +5,7 @@ import { useAuth } from "./context/AuthContext.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
+import Profile from "./pages/Profile.jsx";
 import Signup from "./pages/Signup.jsx";
 
 function App() {
@@ -67,6 +68,16 @@ function App() {
             element={
               isAuthenticated ? (
                 <Dashboard user={user} />
+              ) : (
+                <Navigate replace to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              isAuthenticated ? (
+                <Profile />
               ) : (
                 <Navigate replace to="/login" />
               )

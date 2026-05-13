@@ -48,6 +48,18 @@ const userSchema = new mongoose.Schema(
       type:String,
       trim:true
     },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    careerGoal: {
+      type: String,
+      trim: true,
+    },
+    preferredJobType: {
+      type: String,
+      trim: true,
+    },
     resetPasswordToken:{
       type:String
     },

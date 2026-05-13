@@ -5,6 +5,25 @@ import jwt from "jsonwebtoken";
 import User from "../models/Users.js";
 
 const normalizeEmail = (email) => email?.trim().toLowerCase();
+const normalizeText = (value) => (typeof value === "string" ? value.trim() : value);
+const normalizeSkills = (skills) => {
+  if (skills === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(skills)) {
+    return skills.map((skill) => normalizeText(skill)).filter(Boolean);
+  }
+
+  if (typeof skills === "string") {
+    return skills
+      .split(",")
+      .map((skill) => normalizeText(skill))
+      .filter(Boolean);
+  }
+
+  return undefined;
+};
 
 const createAuthToken = (userId) => {
   if (!process.env.JWT_SECRET) {
@@ -32,6 +51,9 @@ const formatUserResponse = (user) => ({
   collegeName: user.collegeName,
   year: user.year,
   branch: user.branch,
+  skills: user.skills,
+  careerGoal: user.careerGoal,
+  preferredJobType: user.preferredJobType,
 });
 
 const sendServerError = (res, message, error) =>
@@ -263,8 +285,8 @@ export const getProfile=async (req,res)=>{
     }
     return res.status(200).json({
       success:true,
-      message:"Profile updated successfully",
-      user,
+      message:"Profile fetched successfully",
+      user: formatUserResponse(user),
     })
   } catch (error) {
      return res.status(500).json({
@@ -273,4 +295,81 @@ export const getProfile=async (req,res)=>{
       error: error.message,
     });
   }
+}
+export const updateProfile = async (req, res) => {
+   try {
+    const userId=req.user.id;
+    const {
+      name,
+      role,
+      age,
+      collegeName,
+      year,
+      branch,
+      targetRole,
+      focusArea,
+      skills,
+      careerGoal,
+      preferredJobType,
+    } = req.body ?? {};
+    const updateData={
+      name: normalizeText(name),
+      role,
+      age,
+      collegeName: normalizeText(collegeName),
+      year,
+      branch: normalizeText(branch),
+      targetRole: normalizeText(targetRole),
+      focusArea: normalizeText(focusArea),
+      skills: normalizeSkills(skills),
+      careerGoal: normalizeText(careerGoal),
+      preferredJobType: normalizeText(preferredJobType),
+    };
+    Object.keys(updateData).forEach((key) => {
+      if(updateData[key] === undefined){
+        delete updateData[key];
+      }
+    });
+    if(updateData.age!==undefined){
+      updateData.age=Number(updateData.age)
+      if (Number.isNaN(updateData.age)) {
+        return res.status(400).json({
+          success: false,
+          message: "Age must be a valid number",
+        });
+      }
+    }
+    if(updateData.year!==undefined){
+      updateData.year=Number(updateData.year)
+      if (Number.isNaN(updateData.year)) {
+        return res.status(400).json({
+          success: false,
+          message: "Year must be a valid number",
+        });
+     }
+    }
+     const user = await User.findByIdAndUpdate(userId, updateData, {
+      returnDocument: "after",
+      runValidators: true,
+    }).select("-password");
+
+     if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+     return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: formatUserResponse(user),
+    });
+   } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Profile update failed",
+      error: error.message,
+    });
+   }
 }
