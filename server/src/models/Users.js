@@ -24,6 +24,14 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "professional", "admin"],  // fixed allowed values only
       default: "student",
     },
+    targetRole: {
+      type: String,
+      trim: true,
+    },
+    focusArea: {
+      type: String,
+      trim: true,
+    },
     age: {
       type: Number,
     },

@@ -1,0 +1,6 @@
+export const getHealthcheck = (_req, res) =>
+  res.status(200).json({
+    success: true,
+    message: "CareerPilot API is running",
+    timestamp: new Date().toISOString(),
+  });

@@ -1,0 +1,62 @@
+<svg width="720" height="520" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="76" y1="58" x2="652" y2="454" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#35104A"/>
+      <stop offset="0.55" stop-color="#6B21A8"/>
+      <stop offset="1" stop-color="#FF5A8A"/>
+    </linearGradient>
+    <linearGradient id="card" x1="196" y1="102" x2="520" y2="364" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8EE"/>
+      <stop offset="1" stop-color="#FFF0F7"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="298" y1="186" x2="546" y2="334" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="102" y1="332" x2="258" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F97316"/>
+      <stop offset="1" stop-color="#FACC15"/>
+    </linearGradient>
+    <filter id="shadow" x="152" y="66" width="412" height="338" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#150B25" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect x="50" y="40" width="620" height="420" rx="44" fill="url(#bg)"/>
+  <circle cx="122" cy="122" r="56" fill="#FFFFFF" fill-opacity="0.08"/>
+  <circle cx="606" cy="106" r="40" fill="#FFFFFF" fill-opacity="0.12"/>
+  <circle cx="612" cy="392" r="72" fill="#FFFFFF" fill-opacity="0.08"/>
+
+  <g filter="url(#shadow)">
+    <rect x="180" y="94" width="356" height="282" rx="32" fill="url(#card)"/>
+    <rect x="206" y="122" width="304" height="186" rx="24" fill="url(#panel)"/>
+    <rect x="228" y="146" width="132" height="10" rx="5" fill="#8B5CF6"/>
+    <rect x="228" y="170" width="170" height="10" rx="5" fill="#F472B6"/>
+    <rect x="228" y="194" width="108" height="10" rx="5" fill="#FDE68A"/>
+    <rect x="228" y="230" width="120" height="56" rx="18" fill="#F97316"/>
+    <rect x="362" y="230" width="126" height="56" rx="18" fill="#FFFFFF"/>
+    <rect x="378" y="248" width="74" height="10" rx="5" fill="#312E81"/>
+    <rect x="240" y="247" width="70" height="10" rx="5" fill="#FFF7ED"/>
+    <circle cx="426" cy="182" r="44" fill="#EC4899"/>
+    <circle cx="426" cy="174" r="18" fill="#FFF7ED"/>
+    <path d="M390 236C396.667 211.333 408.667 199 426 199C443.333 199 455.333 211.333 462 236" fill="#FFF7ED"/>
+
+    <rect x="224" y="328" width="126" height="20" rx="10" fill="#F5D0FE"/>
+    <rect x="362" y="328" width="84" height="20" rx="10" fill="#DDD6FE"/>
+    <rect x="454" y="328" width="42" height="20" rx="10" fill="#FED7AA"/>
+  </g>
+
+  <g>
+    <rect x="86" y="320" width="164" height="86" rx="28" fill="url(#accent)"/>
+    <text x="112" y="356" fill="#35104A" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Goal streak</text>
+    <text x="112" y="388" fill="#35104A" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800">21 days</text>
+  </g>
+
+  <g>
+    <rect x="518" y="170" width="126" height="146" rx="28" fill="#FFF8EE"/>
+    <circle cx="581" cy="216" r="34" fill="#FDE68A"/>
+    <path d="M581 198L586 210H600L589 218L594 232L581 223L568 232L573 218L562 210H576L581 198Z" fill="#F97316"/>
+    <text x="546" y="278" fill="#35104A" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">Interview</text>
+    <text x="540" y="302" fill="#6B7280" font-family="Segoe UI, Arial, sans-serif" font-size="15">practice ready</text>
+  </g>
+</svg>

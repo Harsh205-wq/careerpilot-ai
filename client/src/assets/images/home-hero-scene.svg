@@ -1,0 +1,55 @@
+<svg width="760" height="560" viewBox="0 0 760 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="frame" x1="92" y1="58" x2="658" y2="490" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B1B1B"/>
+      <stop offset="0.54" stop-color="#151515"/>
+      <stop offset="1" stop-color="#181818"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="214" y1="236" x2="498" y2="316" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8F5C"/>
+      <stop offset="1" stop-color="#FF7849"/>
+    </linearGradient>
+    <linearGradient id="pill" x1="112" y1="334" x2="240" y2="404" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8F5C"/>
+      <stop offset="1" stop-color="#FF7849"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="70" y="48" width="620" height="440" rx="46" fill="url(#frame)"/>
+  <circle cx="152" cy="126" r="64" fill="#FFFFFF" fill-opacity="0.04"/>
+  <circle cx="610" cy="112" r="42" fill="#FFFFFF" fill-opacity="0.05"/>
+  <circle cx="624" cy="412" r="72" fill="#FF7849" fill-opacity="0.08"/>
+
+  <rect x="164" y="100" width="380" height="304" rx="34" fill="#1B1B1B" stroke="#2A2A2A"/>
+  <rect x="196" y="132" width="316" height="60" rx="22" fill="#0F0F10"/>
+  <circle cx="230" cy="162" r="11" fill="#FF7849"/>
+  <rect x="254" y="152" width="118" height="10" rx="5" fill="#F2F2F2"/>
+  <rect x="254" y="170" width="82" height="10" rx="5" fill="#7A7A7A"/>
+
+  <rect x="198" y="214" width="150" height="164" rx="26" fill="#1B1B1B" stroke="#2A2A2A"/>
+  <rect x="222" y="238" width="102" height="14" rx="7" fill="#F2F2F2"/>
+  <rect x="222" y="266" width="78" height="10" rx="5" fill="#7A7A7A"/>
+  <rect x="222" y="304" width="102" height="12" rx="6" fill="#303030"/>
+  <rect x="222" y="304" width="74" height="12" rx="6" fill="#FF7849"/>
+  <rect x="222" y="332" width="84" height="12" rx="6" fill="#303030"/>
+  <rect x="222" y="332" width="48" height="12" rx="6" fill="#FF8F5C"/>
+
+  <rect x="364" y="214" width="148" height="164" rx="26" fill="#1B1B1B" stroke="#2A2A2A"/>
+  <path d="M390 326L420 286L444 300L482 248" stroke="url(#accent)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="390" cy="326" r="10" fill="#FF8F5C"/>
+  <circle cx="420" cy="286" r="10" fill="#FF7849"/>
+  <circle cx="444" cy="300" r="10" fill="#FF8F5C"/>
+  <circle cx="482" cy="248" r="10" fill="#FF7849"/>
+  <rect x="386" y="346" width="104" height="10" rx="5" fill="#303030"/>
+  <rect x="386" y="346" width="70" height="10" rx="5" fill="#FF7849"/>
+
+  <rect x="96" y="334" width="144" height="80" rx="28" fill="#1B1B1B" stroke="#2A2A2A"/>
+  <rect x="112" y="348" width="110" height="22" rx="11" fill="url(#pill)"/>
+  <text x="120" y="388" fill="#F2F2F2" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">Focus mode</text>
+
+  <rect x="552" y="176" width="118" height="138" rx="28" fill="#1B1B1B" stroke="#2A2A2A"/>
+  <circle cx="611" cy="216" r="34" fill="#FF7849" fill-opacity="0.18"/>
+  <path d="M611 196L616 210H630L619 218L624 232L611 224L598 232L603 218L592 210H606L611 196Z" fill="#FF8F5C"/>
+  <text x="576" y="278" fill="#F2F2F2" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">Daily goal</text>
+  <text x="586" y="302" fill="#B8B8B8" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">3 tasks</text>
+</svg>
